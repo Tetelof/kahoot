@@ -54,13 +54,6 @@ export default function HostGame() {
     router.push('/');
   };
 
-  // Clear sessionStorage when game ends
-  useEffect(() => {
-    if (gameState.gameStatus === 'ended') {
-      sessionStorage.removeItem('hostGamePin');
-    }
-  }, [gameState.gameStatus]);
-
   // Game not created yet
   if (!gamePin) {
     return (
