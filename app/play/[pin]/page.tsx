@@ -23,13 +23,13 @@ export default function PlayGame() {
   const params = useParams();
   const router = useRouter();
   const pin = params.pin as string;
-  
+
   // Get player name from session storage
   const storedName = useSessionStorage('playerName');
   const [localName, setLocalName] = useState<string>('');
-  const [isJoining, setIsJoining] = useState(false);
-  
-  const playerName = localName || storedName || '';
+  const [hasJoined, setHasJoined] = useState<boolean>(!!storedName);
+
+  const playerName = storedName || '';
 
   const {
     gameState,
@@ -43,7 +43,7 @@ export default function PlayGame() {
   const handleJoin = () => {
     if (localName.trim()) {
       sessionStorage.setItem('playerName', localName.trim());
-      setIsJoining(false);
+      setHasJoined(true);
     }
   };
 
@@ -52,7 +52,7 @@ export default function PlayGame() {
   };
 
   // Show name input if not joined
-  if (!playerName && !isJoining) {
+  if (!hasJoined) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 flex flex-col items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
