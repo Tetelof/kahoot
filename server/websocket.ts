@@ -266,9 +266,14 @@ async function handleNextQuestion(ws: WebSocket) {
   if (!state) return;
 
   const nextIndex = state.game.current_question_index + 1;
-  
+
   if (nextIndex >= state.questions.length) {
     await query('UPDATE games SET status = $1 WHERE id = $2', ['ended', client.gameId]);
+    // Send final game state with updated scores before ending
+    const finalState = await getGameState(client.gameId);
+    if (finalState) {
+      broadcastToGame(client.gameId, { type: 'game_state', payload: finalState });
+    }
     broadcastToGame(client.gameId, { type: 'game_end', payload: null });
     return;
   }
@@ -342,6 +347,11 @@ async function handleEndGame(ws: WebSocket) {
   if (!client.isHost || !client.gameId) return;
 
   await query('UPDATE games SET status = $1 WHERE id = $2', ['ended', client.gameId]);
+  // Send final game state with updated scores before ending
+  const finalState = await getGameState(client.gameId);
+  if (finalState) {
+    broadcastToGame(client.gameId, { type: 'game_state', payload: finalState });
+  }
   broadcastToGame(client.gameId, { type: 'game_end', payload: null });
 }
 

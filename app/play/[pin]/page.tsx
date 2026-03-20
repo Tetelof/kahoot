@@ -127,8 +127,10 @@ export default function PlayGame() {
   // Game ended
   if (gameState.gameStatus === 'ended') {
     const myPlayer = gameState.players.find(p => p.name === playerName);
-    const playerRank = myPlayer 
-      ? gameState.players.findIndex(p => p.name === playerName) + 1 
+    // Sort players by score to get accurate ranking
+    const sortedPlayers = [...gameState.players].sort((a, b) => b.score - a.score);
+    const playerRank = myPlayer
+      ? sortedPlayers.findIndex(p => p.name === playerName) + 1
       : 0;
 
     return (

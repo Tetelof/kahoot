@@ -138,7 +138,9 @@ export default function HostGame() {
 
   // Game ended
   if (gameState.gameStatus === 'ended') {
-    const winner = gameState.players[0]; // Players are sorted by score
+    // Sort players by score to ensure winner is the top scorer
+    const sortedPlayers = [...gameState.players].sort((a, b) => b.score - a.score);
+    const winner = sortedPlayers[0];
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-yellow-500 via-orange-500 to-red-500 flex flex-col items-center justify-center p-4">
