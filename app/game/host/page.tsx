@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useSyncExternalStore } from 'react';
+import { useState, useEffect, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
 import { useGameSocket } from '@/lib/useGameSocket';
 import { QuestionCard } from '@/components/QuestionCard';
@@ -53,6 +53,13 @@ export default function HostGame() {
     setLocalPin(null);
     router.push('/');
   };
+
+  // Clear sessionStorage when game ends
+  useEffect(() => {
+    if (gameState.gameStatus === 'ended') {
+      sessionStorage.removeItem('hostGamePin');
+    }
+  }, [gameState.gameStatus]);
 
   // Game not created yet
   if (!gamePin) {

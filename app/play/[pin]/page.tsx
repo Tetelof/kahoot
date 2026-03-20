@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useSyncExternalStore } from 'react';
+import { useState, useEffect, useSyncExternalStore } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useGameSocket } from '@/lib/useGameSocket';
 import { QuestionCard } from '@/components/QuestionCard';
@@ -51,6 +51,13 @@ export default function PlayGame() {
   const handleBackToHome = () => {
     router.push('/');
   };
+
+  // Clear sessionStorage when game ends
+  useEffect(() => {
+    if (gameState.gameStatus === 'ended') {
+      sessionStorage.removeItem('playerName');
+    }
+  }, [gameState.gameStatus]);
 
   // Show name input if not joined
   if (!hasJoined) {
