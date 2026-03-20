@@ -4,6 +4,7 @@ import { useState, useSyncExternalStore } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useGameSocket } from '@/lib/useGameSocket';
 import { QuestionCard } from '@/components/QuestionCard';
+import { Scoreboard } from '@/components/Scoreboard';
 
 // Custom hook to sync sessionStorage
 function useSessionStorage(key: string, initialValue: string | null = null) {
@@ -100,30 +101,6 @@ export default function PlayGame() {
     );
   }
 
-  // Waiting for game to start
-  if (gameState.gameStatus === 'waiting' || !gameState.currentQuestion) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-purple-700 flex flex-col items-center justify-center p-4">
-        <div className="text-center">
-          <div className="animate-pulse">
-            <div className="text-8xl mb-8">🎮</div>
-          </div>
-          <h1 className="text-3xl font-bold text-white mb-4">
-            Hi, {playerName}! 👋
-          </h1>
-          <p className="text-xl text-white/80 mb-8">
-            Waiting for the game to start...
-          </p>
-          <div className="bg-white/20 backdrop-blur-sm rounded-xl px-8 py-4 inline-block">
-            <p className="text-white">
-              Game PIN: <span className="font-bold text-2xl">{pin}</span>
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // Game ended
   if (gameState.gameStatus === 'ended') {
     const myPlayer = gameState.players.find(p => p.name === playerName);
@@ -150,6 +127,11 @@ export default function PlayGame() {
           </p>
         </div>
 
+        {/* Full Leaderboard */}
+        <div className="w-full max-w-md mb-8">
+          <Scoreboard players={gameState.players} />
+        </div>
+
         <button
           onClick={handleBackToHome}
           className="bg-white text-gray-900 text-xl font-bold py-4 px-12 rounded-xl hover:bg-gray-100 transition-colors"
@@ -157,11 +139,35 @@ export default function PlayGame() {
           Play Again
         </button>
       </div>
-    );
-  }
+  );
+}
 
-  // Show question
-  const currentQuestion = gameState.currentQuestion;
+// Waiting for game to start
+if (gameState.gameStatus === 'waiting' || !gameState.currentQuestion) {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-purple-700 flex flex-col items-center justify-center p-4">
+      <div className="text-center">
+        <div className="animate-pulse">
+          <div className="text-8xl mb-8">🎮</div>
+        </div>
+        <h1 className="text-3xl font-bold text-white mb-4">
+          Hi, {playerName}! 👋
+        </h1>
+        <p className="text-xl text-white/80 mb-8">
+          Waiting for the game to start...
+        </p>
+        <div className="bg-white/20 backdrop-blur-sm rounded-xl px-8 py-4 inline-block">
+          <p className="text-white">
+            Game PIN: <span className="font-bold text-2xl">{pin}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Show question
+const currentQuestion = gameState.currentQuestion;
   const hasAnswered = gameState.selectedAnswerId !== null;
   const showResult = gameState.showResult;
   const isCorrect = hasAnswered && gameState.selectedAnswerId === currentQuestion.correct_answer_id;
