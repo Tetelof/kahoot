@@ -1,0 +1,6 @@
+{
+  "framework": "Next.js",
+  "deployment": "Vercel",
+  "database": "Supabase or Prisma Postgres",
+  "timeline": "none"
+}
