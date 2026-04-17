@@ -1,6 +1,6 @@
 'use client';
 
-import { Player } from '@/lib/gameStore';
+import { Player } from '@/lib/shared/types';
 
 interface ScoreboardProps {
   players: Player[];
